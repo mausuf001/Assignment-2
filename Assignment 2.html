@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assignment 2: JavaScript Projects</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 30px; 
+            padding: 20px; 
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            width: 500px;
+            background-color: #fff;
+            border: 3px solid #ddd;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            text-align: center;
+        }
+        .fortune-box { 
+            border: 3px solid black; 
+            padding: 20px; 
+            text-align: center; 
+            background-color: #FFD700;
+            color: red;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .button-container button { 
+            margin: 5px; 
+            background-color: orange;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .stopwatch { 
+            font-size: 32px; 
+            font-weight: bold;
+            color: black;
+            border: 3px solid black;
+            background-color: #FFF;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .todo-item { 
+            display: flex; 
+            align-items: center; 
+            background-color: #fff; 
+            border: 1px solid #ddd; 
+            padding: 8px 12px; 
+            margin-top: 5px; 
+            border-radius: 6px;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Fortune Generator</h2>
+        <div class="fortune-box" id="fortuneBox">You are wise beyond your years.</div>
+        <div class="button-container">
+            <button onclick="changeFontColor()">Font Color</button>
+            <button onclick="changeBgColor()">Background</button>
+            <button onclick="changeBorderColor()">Border</button>
+            <button onclick="changeFontStyle()">Font Size</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Stopwatch</h2>
+        <div class="stopwatch" id="stopwatch">0s</div>
+        <button onclick="startTimer()">Start</button>
+        <button onclick="stopTimer()">Stop</button>
+        <button onclick="resetTimer()">Reset</button>
+    </div>
+
+    <div class="container">
+        <h2>To-Do List</h2>
+        <input type="text" id="taskInput" placeholder="Enter a task">
+        <button onclick="addTask()">Add</button>
+        <div id="taskList"></div>
+    </div>
+
+    <script>
+        const fortunes = [
+            "You are wise beyond your years.",
+            "Success is on the horizon.",
+            "An exciting opportunity awaits you.",
+            "You will soon achieve your goals.",
+            "A pleasant surprise is in store for you."
+        ];
+
+        window.onload = function() {
+            changeFortune();
+            loadTasks();
+        };
+
+        function changeFortune() {
+            document.getElementById('fortuneBox').innerText = fortunes[Math.floor(Math.random() * fortunes.length)];
+        }
+
+        function changeFontColor() {
+            const colors = ['red', 'blue', 'green', 'purple', 'orange'];
+            document.getElementById('fortuneBox').style.color = colors[Math.floor(Math.random() * colors.length)];
+        }
+        function changeBgColor() {
+            const colors = ['#FFD700', '#98FB98', '#AFEEEE', '#FFC0CB', '#F0E68C'];
+            document.getElementById('fortuneBox').style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        }
+        function changeBorderColor() {
+            const colors = ['red', 'green', 'blue', 'purple', 'black'];
+            document.getElementById('fortuneBox').style.border = `3px solid ${colors[Math.floor(Math.random() * colors.length)]}`;
+        }
+        function changeFontStyle() {
+            const sizes = ['16px', '20px', '24px', '28px', '32px'];
+            document.getElementById('fortuneBox').style.fontSize = sizes[Math.floor(Math.random() * sizes.length)];
+        }
+
+        let time = 0;
+        let interval;
+        function startTimer() {
+            if (!interval && time < 30) {
+                interval = setInterval(() => {
+                    time += 3;
+                    document.getElementById('stopwatch').innerText = `${time}s`;
+                    if (time >= 30) {
+                        stopTimer();
+                    }
+                }, 3000);
+            }
+        }
+        function stopTimer() {
+            clearInterval(interval);
+            interval = null;
+        }
+        function resetTimer() {
+            stopTimer();
+            time = 0;
+            document.getElementById('stopwatch').innerText = '0s';
+        }
+
+        function addTask() {
+            const taskInput = document.getElementById('taskInput');
+            const taskList = document.getElementById('taskList');
+            const taskText = taskInput.value.trim();
+
+            if (taskText) {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'todo-item';
+                taskItem.innerHTML = `<span>${taskText}</span> <input type="checkbox" onchange="saveTasks()"> <button onclick="deleteTask(this)">Delete</button>`;
+                taskList.appendChild(taskItem);
+                saveTasks();
+                taskInput.value = "";
+            }
+        }
+
+        function deleteTask(button) {
+            button.parentElement.remove();
+            saveTasks();
+        }
+
+        function saveTasks() {
+            const tasks = Array.from(document.getElementById('taskList').children).map(task => task.innerHTML);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
+
+        function loadTasks() {
+            const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            const taskList = document.getElementById('taskList');
+            tasks.forEach(taskHTML => {
+                const taskItem = document.createElement('div');
+                taskItem.className = 'todo-item';
+                taskItem.innerHTML = taskHTML;
+                taskList.appendChild(taskItem);
+            });
+        }
+    </script>
+</body>
+</html>
