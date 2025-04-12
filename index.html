@@ -32,7 +32,7 @@
             font-weight: bold;
             margin-bottom: 10px;
         }
-        .button-container button { 
+        .button-container button, .nav-container button, .color-buttons button { 
             margin: 5px; 
             background-color: orange;
             color: #fff;
@@ -61,10 +61,18 @@
             border-radius: 6px;
             justify-content: space-between;
         }
+        .nav-container, .color-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
+
+    <!-- Fortune Generator -->
+    <div class="container" id="fortuneSection">
         <h2>Fortune Generator</h2>
         <div class="fortune-box" id="fortuneBox">You are wise beyond your years.</div>
         <div class="button-container">
@@ -73,9 +81,18 @@
             <button onclick="changeBorderColor()">Border</button>
             <button onclick="changeFontStyle()">Font Size</button>
         </div>
+
+        <!-- Specific Color Buttons for Fortune Box -->
+        <div class="color-buttons">
+            <button style="background-color: #ADD8E6;" onclick="setFortuneBoxBg('#ADD8E6')">Light Blue</button>
+            <button style="background-color: #90EE90;" onclick="setFortuneBoxBg('#90EE90')">Light Green</button>
+            <button style="background-color: #FFB6C1;" onclick="setFortuneBoxBg('#FFB6C1')">Light Pink</button>
+            <button style="background-color: #F5DEB3;" onclick="setFortuneBoxBg('#F5DEB3')">Wheat</button>
+        </div>
     </div>
 
-    <div class="container">
+    <!-- Stopwatch -->
+    <div class="container" id="stopwatchSection">
         <h2>Stopwatch</h2>
         <div class="stopwatch" id="stopwatch">0s</div>
         <button onclick="startTimer()">Start</button>
@@ -83,11 +100,19 @@
         <button onclick="resetTimer()">Reset</button>
     </div>
 
-    <div class="container">
+    <!-- To-Do List -->
+    <div class="container" id="todoSection">
         <h2>To-Do List</h2>
         <input type="text" id="taskInput" placeholder="Enter a task">
         <button onclick="addTask()">Add</button>
         <div id="taskList"></div>
+    </div>
+
+    <!-- Navigation Menu at the bottom -->
+    <div class="nav-container">
+        <button onclick="document.getElementById('fortuneSection').scrollIntoView({behavior: 'smooth'})">Fortune Generator</button>
+        <button onclick="document.getElementById('stopwatchSection').scrollIntoView({behavior: 'smooth'})">Stopwatch</button>
+        <button onclick="document.getElementById('todoSection').scrollIntoView({behavior: 'smooth'})">To-Do List</button>
     </div>
 
     <script>
@@ -112,21 +137,29 @@
             const colors = ['red', 'blue', 'green', 'purple', 'orange'];
             document.getElementById('fortuneBox').style.color = colors[Math.floor(Math.random() * colors.length)];
         }
+
         function changeBgColor() {
             const colors = ['#FFD700', '#98FB98', '#AFEEEE', '#FFC0CB', '#F0E68C'];
             document.getElementById('fortuneBox').style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
         }
+
         function changeBorderColor() {
             const colors = ['red', 'green', 'blue', 'purple', 'black'];
             document.getElementById('fortuneBox').style.border = `3px solid ${colors[Math.floor(Math.random() * colors.length)]}`;
         }
+
         function changeFontStyle() {
             const sizes = ['16px', '20px', '24px', '28px', '32px'];
             document.getElementById('fortuneBox').style.fontSize = sizes[Math.floor(Math.random() * sizes.length)];
         }
 
+        function setFortuneBoxBg(color) {
+            document.getElementById('fortuneBox').style.backgroundColor = color;
+        }
+
         let time = 0;
         let interval;
+
         function startTimer() {
             if (!interval && time < 30) {
                 interval = setInterval(() => {
@@ -138,10 +171,12 @@
                 }, 3000);
             }
         }
+
         function stopTimer() {
             clearInterval(interval);
             interval = null;
         }
+
         function resetTimer() {
             stopTimer();
             time = 0;
